@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>BRUTAL Coach</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>BRUTAL</h1>
+
+  <div class="form">
+    <input id="objectif" placeholder="Objectif mensuel (€)">
+    <input id="deadline" placeholder="Deadline">
+    <input id="niveau" placeholder="Niveau / activité">
+
+    <textarea id="actions" placeholder="Actions réalisées aujourd’hui"></textarea>
+    <textarea id="resultats" placeholder="Résultats concrets"></textarea>
+
+    <button onclick="analyze()">Analyser</button>
+  </div>
+
+  <pre id="output"></pre>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
