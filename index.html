@@ -2,28 +2,50 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>BRUTAL Coach</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRUTAL OS | Performance Business</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">Système de performance</p>
+      <h1>BRUTAL</h1>
+      <p class="subtitle">Analyse froide des actions business. Rien d'autre.</p>
+    </header>
 
-<div class="container">
-  <h1>BRUTAL</h1>
+    <section class="card">
+      <form id="brutal-form">
+        <label for="objectif">Objectif mensuel (€)</label>
+        <input id="objectif" name="objectif" type="number" min="0" placeholder="Ex: 10000" required>
 
-  <div class="form">
-    <input id="objectif" placeholder="Objectif mensuel (€)">
-    <input id="deadline" placeholder="Deadline">
-    <input id="niveau" placeholder="Niveau / activité">
+        <label for="deadline">Deadline</label>
+        <input id="deadline" name="deadline" type="date" required>
 
-    <textarea id="actions" placeholder="Actions réalisées aujourd’hui"></textarea>
-    <textarea id="resultats" placeholder="Résultats concrets"></textarea>
+        <label for="niveau">Niveau actuel</label>
+        <input id="niveau" name="niveau" type="text" placeholder="Ex: Freelance, 1 client actif" required>
 
-    <button onclick="analyze()">Analyser</button>
-  </div>
+        <label for="actions">Actions du jour</label>
+        <textarea id="actions" name="actions" rows="5" placeholder="Une action par ligne. Ex: 25 appels sortants, 3 démos, 1 closing." required></textarea>
 
-  <pre id="output"></pre>
-</div>
+        <label for="resultats">Résultats du jour</label>
+        <textarea id="resultats" name="resultats" rows="4" placeholder="Chiffres concrets: CA, RDV pris, ventes, nouveaux leads qualifiés." required></textarea>
 
-<script src="app.js"></script>
+        <button type="submit">Analyser</button>
+      </form>
+    </section>
+
+    <section class="card output-card">
+      <h2>Diagnostic</h2>
+      <pre id="output">Donne-moi :
+1) Ton objectif mensuel (€)
+2) Ta deadline
+3) Ton niveau actuel
+4) Tes actions du jour
+5) Tes résultats concrets</pre>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
