@@ -68,7 +68,7 @@ SCORE :
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "HTTP-Referer": "http://localhost",
         "X-Title": "BRUTAL Coach"
       },
