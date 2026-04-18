@@ -119,7 +119,7 @@ function resetAccess() {
 
   saveMembership();
   syncMembershipUI();
-  setCheckoutMessage("Le paywall est reverrouillé. Reprends un plan Pro pour réactiver l'analyse.");
+  setCheckoutMessage("Le paywall est reverrouillé. Reprends un plan Pro pour réactiver l’analyse.");
 }
 
 function buildPrompt({ objectif, deadline, niveau, actions, resultats }) {
@@ -207,6 +207,24 @@ function inferResultsScore(resultats) {
   return count;
 }
 
+function buildAdviceMix(hasOnlyOutbound, mentionsRevenue) {
+  if (hasOnlyOutbound && !mentionsRevenue) {
+    return [
+      "40% ciblage : vise les restaurants qui souffrent déjà d’un vrai problème de réponse client ou de réservation.",
+      "30% relance : recontacte les prospects déjà touchés avant d’ajouter du volume aveugle.",
+      "20% offre : clarifie la promesse business de ton chat IA en gain concret pour le restaurant.",
+      "10% mesure : note les réponses, les objections et ce qui déclenche une conversation."
+    ];
+  }
+
+  return [
+    "35% closing : pousse les prospects les plus chauds jusqu’au prochain engagement concret.",
+    "25% relance : sécurise le suivi sur tous les contacts déjà ouverts.",
+    "25% acquisition : ajoute du volume propre sur une cible très précise.",
+    "15% optimisation : affine l’offre, le script et la preuve apportée."
+  ];
+}
+
 function buildAnalysis({ objectif, deadline, niveau, actions, resultats }) {
   const objectifValue = extractFirstNumber(objectif);
   const activityVolume = inferActivityVolume(actions);
@@ -226,27 +244,28 @@ function buildAnalysis({ objectif, deadline, niveau, actions, resultats }) {
   const score = `${scoreBase}/10`;
   const revenueLine = objectifValue !== null
     ? `Ton objectif annoncé est ${objectifValue} € et il ne pardonne aucun faux mouvement.`
-    : "Ton objectif est annoncé sans montant clair, donc ton niveau d'exigence reste flou.";
+    : "Ton objectif est annoncé sans montant clair, donc ton niveau d’exigence reste flou.";
   const resultsLine = mentionsRevenue
     ? "Tu as au moins un signal de revenu ou de client à exploiter."
-    : "Tu n'as produit aucun signal de revenu aujourd'hui.";
+    : "Tu n’as produit aucun signal de revenu aujourd’hui.";
   const paceLine = activityVolume >= 50 && !mentionsRevenue
-    ? "Le volume existe, la conversion n'existe pas."
+    ? "Le volume existe, la conversion n’existe pas."
     : "Le rythme ne vaut rien sans conversion commerciale mesurable.";
   const problemLine = hasOnlyOutbound && !mentionsRevenue
-    ? "Tu mesures l'effort de prospection, pas la qualité de l'offre, du ciblage ou du suivi."
+    ? "Tu mesures l’effort de prospection, pas la qualité de l’offre, du ciblage ou du suivi."
     : "Tu accumules des actions sans preuve claire que ces actions rapprochent du cash.";
   const errorLine = activityVolume > 0 && !mentionsRevenue
-    ? "Tu confonds activité brute et traction. Envoyer plus n'est pas vendre."
-    : "Tu n'as pas encore assez d'actions reliées à un canal qui ferme vraiment.";
+    ? "Tu confonds activité brute et traction. Envoyer plus n’est pas vendre."
+    : "Tu n’as pas encore assez d’actions reliées à un canal qui ferme vraiment.";
   const focusLine = hasOnlyOutbound
     ? "Offre claire, ciblage restaurants plus précis, relances courtes, appel de qualification, closing."
     : "Uniquement les actions qui produisent un rendez-vous, un devis signé ou un paiement.";
+  const adviceMix = buildAdviceMix(hasOnlyOutbound, mentionsRevenue);
   const tomorrowPlan = [
     "Reprends les 20 leads les plus proches du problème et réécris ton angle en bénéfice cash ou temps gagné.",
-    "Lance 10 relances ultra courtes sur les prospects déjà touchés au lieu d'ajouter du volume aveugle.",
+    "Lance 10 relances ultra courtes sur les prospects déjà touchés au lieu d’ajouter du volume aveugle.",
     "Obtiens au moins 2 conversations qualifiées demain, pas juste des ouvertures ou des refus.",
-    "Si personne ne veut parler, change l'offre ou le message avant de renvoyer 100 mails."
+    "Si personne ne veut parler, change l’offre ou le message avant de renvoyer 100 mails."
   ];
   const pressureLine = `Deadline : ${deadline}. ${revenueLine} ${paceLine}`;
 
@@ -255,6 +274,7 @@ function buildAnalysis({ objectif, deadline, niveau, actions, resultats }) {
     "PROBLÈME": problemLine,
     "ERREUR PRINCIPALE": errorLine,
     "CE QUI COMPTE VRAIMENT": `${focusLine} Niveau actuel observé : ${niveau}.`,
+    "RÉPARTITION CONSEILLÉE": adviceMix,
     "PLAN POUR DEMAIN": tomorrowPlan,
     "PRESSION": pressureLine,
     "SCORE": score
@@ -313,39 +333,42 @@ function buildDiscussionReply(userMessage) {
   const lower = userMessage.toLowerCase();
   const reality = lastAnalysis?.["RÉALITÉ"] || "";
   const mainError = lastAnalysis?.["ERREUR PRINCIPALE"] || "";
+  const repartition = Array.isArray(lastAnalysis?.["RÉPARTITION CONSEILLÉE"])
+    ? lastAnalysis["RÉPARTITION CONSEILLÉE"].slice(0, 2).join(" ")
+    : "";
   const tomorrowPlan = Array.isArray(lastAnalysis?.["PLAN POUR DEMAIN"])
     ? lastAnalysis["PLAN POUR DEMAIN"].slice(0, 2).join(" ")
     : "";
   const note = lower.includes("offre")
-    ? "Note : tu doutes du positionnement ou de la formulation de l'offre."
+    ? "Note : tu doutes du positionnement ou de la formulation de l’offre."
     : lower.includes("prix")
       ? "Note : tu questionnes la valeur perçue ou le prix."
       : lower.includes("mail") || lower.includes("message")
         ? "Note : tu veux améliorer le message de prospection."
-        : "Note : tu cherches à débloquer l'exécution à partir de l'analyse.";
+        : "Note : tu cherches à débloquer l’exécution à partir du verdict.";
 
   discussionNotes.push(note);
 
-  let advice = "Conseil : arrête de chercher une phrase parfaite. Choisis un angle simple, fais-le sortir aujourd'hui, puis mesure les réponses réelles.";
+  let advice = "Conseil : arrête de chercher une phrase parfaite. Choisis un angle simple, fais-le sortir aujourd’hui, puis mesure les réponses réelles.";
 
   if (lower.includes("offre")) {
-    advice = "Conseil : formule ton offre comme un résultat concret pour restaurant. Promets un gain clair, par exemple plus de réservations, plus de réponses client, ou moins d'appels perdus.";
+    advice = "Conseil : formule ton offre comme un résultat concret pour restaurant. Promets un gain clair, par exemple plus de réservations, plus de réponses client, ou moins d’appels perdus.";
   } else if (lower.includes("prix")) {
-    advice = "Conseil : ne baisse pas ton prix avant d'avoir testé un positionnement plus précis. Si le prospect ne comprend pas le retour business, le prix sera toujours perçu comme trop haut.";
+    advice = "Conseil : ne baisse pas ton prix avant d’avoir testé un positionnement plus précis. Si le prospect ne comprend pas le retour business, le prix sera toujours perçu comme trop haut.";
   } else if (lower.includes("mail") || lower.includes("message")) {
-    advice = "Conseil : ton message doit partir d'une douleur restaurant visible en 5 secondes. Une phrase de problème, une phrase de résultat, une question de qualification. Pas plus.";
+    advice = "Conseil : ton message doit partir d’une douleur restaurant visible en 5 secondes. Une phrase de problème, une phrase de résultat, une question de qualification. Pas plus.";
   } else if (lower.includes("refus")) {
-    advice = "Conseil : un refus n'est pas un verdict final. C'est un signal de ciblage, d'angle ou de timing. Tu ajustes, tu repars, tu n'abandonnes pas.";
+    advice = "Conseil : un refus n’est pas un verdict final. C’est un signal de ciblage, d’angle ou de timing. Tu ajustes, tu repars, tu n’abandonnes pas.";
   }
 
-  const motivation = "Motivation : tu n'es pas loin d'un déclic, tu es au milieu de la partie difficile où presque tout le monde lâche. Toi, tu restes, tu corriges, tu renvoies plus intelligemment, et c'est là que l'écart se crée.";
+  const motivation = "Motivation : tu n’es pas loin d’un déclic, tu es au milieu de la partie difficile où presque tout le monde lâche. Toi, tu restes, tu corriges, tu renvoies plus intelligemment, et c’est là que l’écart se crée.";
 
-  return `${note}\n\nJe comprends ton point. ${reality}\n\nLe nœud principal reste : ${mainError}\n\n${advice}\n\nAction immédiate : ${tomorrowPlan}\n\n${motivation}`;
+  return `${note}\n\nJe comprends ton point. ${reality}\n\nLe nœud principal reste : ${mainError}\n\nRépartition à garder en tête : ${repartition}\n\n${advice}\n\nAction immédiate : ${tomorrowPlan}\n\n${motivation}`;
 }
 
 async function analyze() {
   if (!membershipState.unlocked) {
-    responseEmpty.textContent = "Accès refusé. Débloque BRUTAL Pro pour lancer l'analyse complète.";
+    responseEmpty.textContent = "Accès refusé. Débloque BRUTAL Pro pour lancer l’analyse complète.";
     document.getElementById("offer").scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
@@ -362,7 +385,7 @@ async function analyze() {
 1. Ton objectif mensuel (€)
 2. Ta deadline
 3. Ta situation actuelle (niveau, activité)
-4. Ce que tu as fait aujourd'hui
+4. Ce que tu as fait aujourd’hui
 5. Tes résultats concrets (clients, prospects, ventes, etc.)
 
 Sans ça, je ne peux pas analyser.`;
@@ -387,7 +410,7 @@ function setAuthMode(mode) {
   authEyebrow.textContent = isSignup ? "Inscription BRUTAL" : "Connexion BRUTAL";
   authTitle.textContent = isSignup ? "Créer ton accès" : "Connexion";
   authCopy.textContent = isSignup
-    ? "Crée ton accès pour retrouver BRUTAL Pro et poursuivre l'activation."
+    ? "Crée ton accès pour retrouver BRUTAL Pro et poursuivre l’activation."
     : "Entre dans ton espace pour retrouver ton accès et ton historique.";
   authSubmit.textContent = isSignup ? "Créer mon accès" : "Me connecter";
   authMessage.textContent = "Accès local pour cette version de démo.";
@@ -457,7 +480,7 @@ function setupPlanButtons() {
       }
 
       document.getElementById("checkout").scrollIntoView({ behavior: "smooth", block: "start" });
-      setCheckoutMessage("Passe par Stripe puis confirme l'achat pour activer BRUTAL Pro.");
+      setCheckoutMessage("Passe par Stripe puis confirme l’achat pour activer BRUTAL Pro.");
     });
   });
 }
@@ -487,7 +510,7 @@ function toggleDiscussion() {
     addDiscussionMessage(
       "assistant",
       "BRUTAL",
-      "Je t'écoute. Pose ta question sur l'analyse, ton offre, ton message, ton prix ou ton exécution. Je note, je te réponds, et on avance."
+      "Je t’écoute. Pose ta question sur l’analyse, ton offre, ton message, ton prix ou ton exécution. Je note, je te réponds, et on avance."
     );
   }
 }
