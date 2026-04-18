@@ -111,46 +111,113 @@ function resetAccess() {
   setCheckoutMessage("Le paywall est reverrouille. Reprends un plan Pro pour reactiver l'analyse.");
 }
 
-function buildPrompt({ objectif, deadline, niveau, actions, resultats }) {
-  return `
-Tu es "BRUTAL", un coach business d'elite specialise dans la performance et les resultats mesurables.
+function extractFirstNumber(value) {
+  const match = value.replace(",", ".").match(/\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
 
-IDENTITE :
-- Tu es direct, froid, analytique.
-- Tu ne motives pas.
-- Tu ne felicites pas l'effort sans resultat.
-- Tu exposes les incoherences entre objectifs et actions.
-- Tu privilegies uniquement ce qui genere des resultats concrets.
+function inferActivityVolume(actions) {
+  const lower = actions.toLowerCase();
+  const count = extractFirstNumber(actions);
 
-MISSION :
-Forcer l'utilisateur a atteindre son objectif financier en eliminant tout ce qui est inutile et en se concentrant sur les actions a fort impact.
+  if (count !== null) {
+    return count;
+  }
 
-CONTEXTE UTILISATEUR :
-Objectif mensuel (EUR) : ${objectif}
-Deadline : ${deadline}
-Niveau actuel : ${niveau}
+  if (lower.includes("mail") || lower.includes("email")) {
+    return 20;
+  }
 
-DONNEES DU JOUR :
-Actions realisees : ${actions}
-Resultats mesurables : ${resultats}
+  if (lower.includes("appel") || lower.includes("call")) {
+    return 5;
+  }
 
-REGLES D'ANALYSE :
-- Compare les actions avec l'objectif financier
-- Determine si le rythme permet d'atteindre l'objectif
-- Identifie le fake work (travail sans impact business)
-- Ignore tout ce qui ne genere pas de revenus
-- Priorite : vente, prospection, acquisition
+  return 0;
+}
 
-FORMAT STRICT :
+function inferResultsScore(resultats) {
+  const lower = resultats.toLowerCase();
+  const count = extractFirstNumber(resultats) || 0;
 
-REALITE :
+  if (lower.includes("vente") || lower.includes("closing") || lower.includes("paiement")) {
+    return Math.max(count, 1) * 3;
+  }
+
+  if (lower.includes("rdv") || lower.includes("appel")) {
+    return Math.max(count, 1) * 2;
+  }
+
+  if (lower.includes("refus")) {
+    return 0;
+  }
+
+  return count;
+}
+
+function buildAnalysis({ objectif, deadline, niveau, actions, resultats }) {
+  const objectifValue = extractFirstNumber(objectif);
+  const activityVolume = inferActivityVolume(actions);
+  const resultsScore = inferResultsScore(resultats);
+  const lowerActions = actions.toLowerCase();
+  const lowerResults = resultats.toLowerCase();
+  const mentionsRevenue =
+    lowerResults.includes("vente") ||
+    lowerResults.includes("paiement") ||
+    lowerResults.includes("client");
+  const hasOnlyOutbound =
+    lowerActions.includes("mail") ||
+    lowerActions.includes("email") ||
+    lowerActions.includes("relance") ||
+    lowerActions.includes("prospection");
+  const scoreBase = Math.min(10, Math.max(2, resultsScore + (mentionsRevenue ? 2 : 0) + (hasOnlyOutbound ? 1 : 0)));
+  const score = `${scoreBase}/10`;
+  const revenueLine = objectifValue !== null
+    ? `Ton objectif annonce est ${objectifValue} EUR.`
+    : "Ton objectif est annonce sans montant clair.";
+  const resultsLine = mentionsRevenue
+    ? "Tu as au moins un signal de revenu ou de client a exploiter."
+    : "Tu n'as produit aucun signal de revenu aujourd'hui.";
+  const paceLine = activityVolume >= 50 && !mentionsRevenue
+    ? "Le volume existe, la conversion n'existe pas."
+    : "Le rythme ne dit rien sans conversion commerciale mesurable.";
+  const problemLine = hasOnlyOutbound && !mentionsRevenue
+    ? "Tu mesures l'effort de prospection, pas la qualite de l'offre, du ciblage ou du follow-up."
+    : "Tu accumules des actions sans preuve claire que ces actions rapprochent du cash.";
+  const errorLine = activityVolume > 0 && !mentionsRevenue
+    ? "Tu confonds activite brute et traction. Envoyer plus n'est pas vendre."
+    : "Tu n'as pas assez d'actions reliees a un canal qui ferme vraiment.";
+  const focusLine = hasOnlyOutbound
+    ? "Ce qui compte: offre claire, ciblage restaurants plus precis, relances courtes, appel de qualification, closing."
+    : "Ce qui compte: uniquement les actions qui produisent un rendez-vous, un devis signe ou un paiement.";
+  const tomorrowPlan = [
+    "1. Reprends les 20 leads les plus proches du probleme et reecris ton angle en benefice cash ou temps gagne.",
+    "2. Lance 10 relances ultra courtes sur les prospects deja touches au lieu d'ajouter du volume aveugle.",
+    "3. Obtiens au moins 2 conversations qualifiees demain, pas juste des ouvertures ou des refus.",
+    "4. Si personne ne veut parler, change l'offre ou le message avant de renvoyer 100 mails."
+  ].join("\n");
+  const pressureLine = `Deadline: ${deadline}. ${revenueLine} ${paceLine}`;
+
+  return `REALITE :
+${resultsLine} ${revenueLine} ${paceLine}
+
 PROBLEME :
+${problemLine}
+
 ERREUR PRINCIPALE :
+${errorLine}
+
 CE QUI COMPTE VRAIMENT :
+${focusLine}
+Niveau actuel observe: ${niveau}.
+
 PLAN POUR DEMAIN :
+${tomorrowPlan}
+
 PRESSION :
+${pressureLine}
+
 SCORE :
-`.trim();
+${score}`;
 }
 
 async function analyze() {
@@ -179,15 +246,7 @@ Sans ca, je ne peux pas analyser.`;
     return;
   }
 
-  const prompt = buildPrompt({ objectif, deadline, niveau, actions, resultats });
-
-  output.textContent =
-`BRUTAL PRO est actif.
-
-Le moteur prive n'est pas expose dans cette interface publique.
-Prompt prepare pour execution securisee :
-
-${prompt}`;
+  output.textContent = buildAnalysis({ objectif, deadline, niveau, actions, resultats });
 }
 
 function setAuthMode(mode) {
