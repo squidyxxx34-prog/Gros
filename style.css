@@ -63,6 +63,12 @@ body::before {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .brand,
 .site-nav a,
 .text-button,
@@ -153,10 +159,12 @@ body::before {
 .hero-text,
 .checkout-copy,
 .workspace-intro p,
+.workspace-note,
 .proof article p,
 .method-layout p,
 .price-card li,
-.microcopy {
+.microcopy,
+.modal-copy {
   color: var(--muted);
   line-height: 1.65;
 }
@@ -257,6 +265,7 @@ textarea {
 .hero-panel,
 .checkout-panel,
 .workspace,
+.modal-card,
 .price-card article,
 .proof article,
 .method-layout article {
@@ -528,6 +537,10 @@ textarea {
   margin-bottom: 18px;
 }
 
+.workspace-note {
+  margin-top: 8px;
+}
+
 .form-grid {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -571,6 +584,72 @@ pre {
   font-size: 0.88rem;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(4, 5, 8, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.modal-backdrop.is-hidden {
+  display: none;
+}
+
+.modal-card {
+  position: relative;
+  width: min(100%, 520px);
+  padding: 30px;
+  border: 1px solid var(--line-strong);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)),
+    var(--panel-strong);
+  box-shadow: var(--shadow);
+}
+
+.thank-you-card {
+  border-color: rgba(225, 75, 49, 0.28);
+}
+
+.modal-card h2 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.modal-form,
+.thank-you-actions {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.modal-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -605,6 +684,11 @@ pre {
 
   .brand-badge {
     order: 3;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 
   .site-nav {
@@ -652,5 +736,16 @@ pre {
   .ghost-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .text-button {
+    width: 100%;
+    padding-left: 0;
+    text-align: center;
   }
 }

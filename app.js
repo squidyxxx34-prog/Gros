@@ -1,5 +1,4 @@
 const STORAGE_KEY = "brutal-membership";
-const DEFAULT_MODEL = "openrouter/elephant-alpha";
 
 const output = document.getElementById("output");
 const membershipPill = document.getElementById("membershipPill");
@@ -7,7 +6,21 @@ const lockedOverlay = document.getElementById("lockedOverlay");
 const checkoutMessage = document.getElementById("checkoutMessage");
 const customerName = document.getElementById("customerName");
 const customerEmail = document.getElementById("customerEmail");
-const apiKeyInput = document.getElementById("apiKey");
+const authModal = document.getElementById("authModal");
+const thankYouModal = document.getElementById("thankYouModal");
+const authTitle = document.getElementById("authTitle");
+const authCopy = document.getElementById("authCopy");
+const authEyebrow = document.getElementById("authEyebrow");
+const authName = document.getElementById("authName");
+const authEmail = document.getElementById("authEmail");
+const authMessage = document.getElementById("authMessage");
+const loginTrigger = document.getElementById("loginTrigger");
+const signupTrigger = document.getElementById("signupTrigger");
+const authSubmit = document.getElementById("authSubmit");
+const purchaseCompleteButton = document.getElementById("purchaseCompleteButton");
+const thankYouCta = document.getElementById("thankYouCta");
+
+let authMode = "login";
 
 let membershipState = loadMembership();
 
@@ -20,7 +33,7 @@ function loadMembership() {
       unlocked: false,
       name: "",
       email: "",
-      apiKey: ""
+      accountReady: false
     };
   }
 
@@ -33,7 +46,7 @@ function loadMembership() {
       unlocked: false,
       name: "",
       email: "",
-      apiKey: ""
+      accountReady: false
     };
   }
 }
@@ -51,7 +64,8 @@ function syncMembershipUI() {
 
   customerName.value = membershipState.name || "";
   customerEmail.value = membershipState.email || "";
-  apiKeyInput.value = membershipState.apiKey || "";
+  authName.value = membershipState.name || "";
+  authEmail.value = membershipState.email || "";
 }
 
 function setCheckoutMessage(message, isError = false) {
@@ -60,12 +74,11 @@ function setCheckoutMessage(message, isError = false) {
 }
 
 function unlockPro() {
-  const name = customerName.value.trim();
-  const email = customerEmail.value.trim();
-  const apiKey = apiKeyInput.value.trim();
+  const name = customerName.value.trim() || membershipState.name || "";
+  const email = customerEmail.value.trim() || membershipState.email || "";
 
-  if (!name || !email || !apiKey) {
-    setCheckoutMessage("Nom, email et cle OpenRouter requis pour debloquer le plan Pro.", true);
+  if (!name || !email) {
+    setCheckoutMessage("Nom et email requis pour activer BRUTAL Pro apres achat.", true);
     return;
   }
 
@@ -74,12 +87,13 @@ function unlockPro() {
     unlocked: true,
     name,
     email,
-    apiKey
+    accountReady: true
   };
 
   saveMembership();
   syncMembershipUI();
-  setCheckoutMessage("BRUTAL Pro est actif sur ce navigateur. Tu peux lancer l'analyse.");
+  setCheckoutMessage("BRUTAL Pro est actif sur ce navigateur.");
+  openThankYouModal();
   document.getElementById("member-zone").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -89,7 +103,7 @@ function resetAccess() {
     unlocked: false,
     name: "",
     email: "",
-    apiKey: ""
+    accountReady: false
   };
 
   saveMembership();
@@ -140,8 +154,8 @@ SCORE :
 }
 
 async function analyze() {
-  if (!membershipState.unlocked || !membershipState.apiKey) {
-    output.textContent = "Acces refuse. Debloque BRUTAL Pro et renseigne ta cle OpenRouter pour lancer l'analyse complete.";
+  if (!membershipState.unlocked) {
+    output.textContent = "Acces refuse. Debloque BRUTAL Pro pour lancer l'analyse complete.";
     document.getElementById("offer").scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
@@ -167,50 +181,66 @@ Sans ca, je ne peux pas analyser.`;
 
   const prompt = buildPrompt({ objectif, deadline, niveau, actions, resultats });
 
-  output.textContent = "Analyse en cours...";
+  output.textContent =
+`BRUTAL PRO est actif.
 
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${membershipState.apiKey}`,
-        "HTTP-Referer": window.location.href,
-        "X-Title": "BRUTAL"
-      },
-      body: JSON.stringify({
-        model: DEFAULT_MODEL,
-        messages: [
-          {
-            role: "system",
-            content: "Tu es BRUTAL. Tu analyses uniquement la performance business et les resultats mesurables."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 900
-      })
-    });
+Le moteur prive n'est pas expose dans cette interface publique.
+Prompt prepare pour execution securisee :
 
-    if (!response.ok) {
-      throw new Error(`Requete invalide (${response.status})`);
-    }
+${prompt}`;
+}
 
-    const data = await response.json();
-    const content = data?.choices?.[0]?.message?.content;
+function setAuthMode(mode) {
+  authMode = mode;
+  const isSignup = mode === "signup";
 
-    if (!content) {
-      output.textContent = "Erreur API : reponse invalide.";
-      return;
-    }
+  authEyebrow.textContent = isSignup ? "Inscription BRUTAL" : "Connexion BRUTAL";
+  authTitle.textContent = isSignup ? "Creer ton acces" : "Connexion";
+  authCopy.textContent = isSignup
+    ? "Cree ton acces pour retrouver BRUTAL Pro et poursuivre l'activation."
+    : "Entre dans ton espace pour retrouver ton acces et ton historique.";
+  authSubmit.textContent = isSignup ? "Creer mon acces" : "Me connecter";
+  authMessage.textContent = "Acces local pour cette version de demo.";
+}
 
-    output.textContent = content;
-  } catch (error) {
-    output.textContent = `Erreur API ou reseau : ${error.message}`;
+function openModal(modal) {
+  modal.classList.remove("is-hidden");
+}
+
+function closeModal(modal) {
+  modal.classList.add("is-hidden");
+}
+
+function openThankYouModal() {
+  openModal(thankYouModal);
+}
+
+function submitAuth() {
+  const name = authName.value.trim();
+  const email = authEmail.value.trim();
+
+  if (!name || !email) {
+    authMessage.textContent = "Nom et email requis.";
+    authMessage.style.color = "#ff9f8c";
+    return;
   }
+
+  membershipState = {
+    ...membershipState,
+    name,
+    email,
+    accountReady: true
+  };
+
+  saveMembership();
+  syncMembershipUI();
+  customerName.value = name;
+  customerEmail.value = email;
+  authMessage.textContent = authMode === "signup"
+    ? "Compte cree localement. Tu peux passer au checkout Stripe."
+    : "Connexion locale active. Tu peux reprendre le checkout Stripe.";
+  authMessage.style.color = "";
+  closeModal(authModal);
 }
 
 function setupScrollButtons() {
@@ -237,7 +267,7 @@ function setupPlanButtons() {
       }
 
       document.getElementById("checkout").scrollIntoView({ behavior: "smooth", block: "start" });
-      setCheckoutMessage("Entre tes infos pour activer BRUTAL Pro sur ce navigateur.");
+      setCheckoutMessage("Passe par Stripe puis confirme l'achat pour activer BRUTAL Pro.");
     });
   });
 }
@@ -258,11 +288,27 @@ function setupRevealAnimations() {
   document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
 }
 
-document.getElementById("unlockButton").addEventListener("click", unlockPro);
 document.getElementById("resetAccessButton").addEventListener("click", resetAccess);
 document.getElementById("analyzeButton").addEventListener("click", analyze);
+document.getElementById("closeAuthModal").addEventListener("click", () => closeModal(authModal));
+document.getElementById("closeThankYouModal").addEventListener("click", () => closeModal(thankYouModal));
+loginTrigger.addEventListener("click", () => {
+  setAuthMode("login");
+  openModal(authModal);
+});
+signupTrigger.addEventListener("click", () => {
+  setAuthMode("signup");
+  openModal(authModal);
+});
+authSubmit.addEventListener("click", submitAuth);
+purchaseCompleteButton.addEventListener("click", unlockPro);
+thankYouCta.addEventListener("click", () => {
+  closeModal(thankYouModal);
+  document.getElementById("member-zone").scrollIntoView({ behavior: "smooth", block: "start" });
+});
 
 setupScrollButtons();
 setupPlanButtons();
 setupRevealAnimations();
+setAuthMode("login");
 syncMembershipUI();

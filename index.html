@@ -26,7 +26,11 @@
         <a href="#member-zone">Espace membre</a>
       </nav>
       <div class="brand-badge">Performance Coaching System</div>
-      <button class="ghost-button" data-scroll-target="#offer">Debloquer</button>
+      <div class="header-actions">
+        <button class="text-button" id="loginTrigger">Login</button>
+        <button class="ghost-button" id="signupTrigger">Inscription</button>
+        <button class="primary-button" data-scroll-target="#offer">Debloquer</button>
+      </div>
     </header>
 
     <main id="top">
@@ -152,7 +156,7 @@
             <p class="price">19 EUR<span>/mois</span></p>
             <ul>
               <li>Analyses completes illimitees</li>
-              <li>Sauvegarde locale de ta cle API</li>
+              <li>Acces par achat Stripe</li>
               <li>Acces instantane a l'espace membre</li>
             </ul>
             <button class="primary-button" data-plan="pro">Debloquer Pro</button>
@@ -161,11 +165,11 @@
 
         <div class="checkout-panel" id="checkout">
           <div>
-            <p class="eyebrow">Activation locale</p>
-            <h3>Debloque le paywall et connecte ton moteur.</h3>
+            <p class="eyebrow">Checkout Stripe</p>
+            <h3>Debloque le paywall via BRUTAL PRO.</h3>
             <p class="checkout-copy">
-              Cette version livre le front, le verrou d'acces et la connexion API cote navigateur.
-              Pour un vrai paiement en production, il faudra brancher Stripe ou un backend serveur.
+              Le paiement passe par Stripe sur un lien produit dedie. L'activation du compte s'effectue ensuite
+              dans l'interface avec confirmation visuelle cote front.
             </p>
           </div>
 
@@ -176,11 +180,15 @@
             <label for="customerEmail">Email</label>
             <input id="customerEmail" type="email" placeholder="toi@exemple.com">
 
-            <label for="apiKey">Cle OpenRouter</label>
-            <input id="apiKey" type="password" placeholder="sk-or-v1-...">
-
-            <button class="primary-button" id="unlockButton">Activer BRUTAL Pro</button>
-            <p class="microcopy" id="checkoutMessage">Aucune donnee n'est envoyee tant que tu ne lances pas une analyse.</p>
+            <a
+              class="primary-button"
+              id="stripeCheckoutButton"
+              href="https://buy.stripe.com/4gM8wP5S0f39eZ9dRRes002"
+              target="_blank"
+              rel="noreferrer"
+            >Payer sur Stripe</a>
+            <button class="ghost-button" id="purchaseCompleteButton">J'ai termine mon achat</button>
+            <p class="microcopy" id="checkoutMessage">Le lien de paiement ouvre le checkout Stripe de BRUTAL PRO.</p>
           </div>
         </div>
       </section>
@@ -199,6 +207,9 @@
             <p>
               L'analyse complete est reservee au plan Pro. Le formulaire reste visible pour
               montrer la promesse produit et faciliter l'activation.
+            </p>
+            <p class="workspace-note">
+              Le moteur d'analyse reste connecte a une configuration privee. Aucune information sensible n'apparait ici.
             </p>
           </div>
 
@@ -243,6 +254,37 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <div class="modal-backdrop is-hidden" id="authModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="modal-close" id="closeAuthModal" aria-label="Fermer">×</button>
+      <p class="eyebrow" id="authEyebrow">Espace BRUTAL</p>
+      <h2 id="authTitle">Connexion</h2>
+      <p class="modal-copy" id="authCopy">Entre dans ton espace pour retrouver ton acces et ton historique.</p>
+      <div class="modal-form">
+        <label for="authName">Nom</label>
+        <input id="authName" type="text" placeholder="Ton nom">
+        <label for="authEmail">Email</label>
+        <input id="authEmail" type="email" placeholder="toi@exemple.com">
+        <button class="primary-button" id="authSubmit">Continuer</button>
+        <p class="microcopy" id="authMessage">Acces local pour cette version de demo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop is-hidden" id="thankYouModal">
+    <div class="modal-card thank-you-card" role="dialog" aria-modal="true" aria-labelledby="thankYouTitle">
+      <button class="modal-close" id="closeThankYouModal" aria-label="Fermer">×</button>
+      <p class="eyebrow">Paiement confirme</p>
+      <h2 id="thankYouTitle">Merci. BRUTAL PRO est active.</h2>
+      <p class="modal-copy">
+        Ton achat a bien ete pris en compte. L'espace membre est ouvert et ton compte local est passe en mode Pro.
+      </p>
+      <div class="thank-you-actions">
+        <button class="primary-button" id="thankYouCta">Acceder a l'espace membre</button>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
