@@ -2,28 +2,234 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>BRUTAL Coach</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRUTAL | Landing + Paywall</title>
+  <meta
+    name="description"
+    content="BRUTAL transforme tes actions business en plan d'execution net, froid et mesurable."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet"
+  >
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="#top">BRUTAL</a>
+      <nav class="site-nav">
+        <a href="#method">Methode</a>
+        <a href="#offer">Offre</a>
+        <a href="#member-zone">Espace membre</a>
+      </nav>
+      <button class="ghost-button" data-scroll-target="#offer">Debloquer</button>
+    </header>
 
-<div class="container">
-  <h1>BRUTAL</h1>
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Coach business sous pression</p>
+          <h1>
+            Le coach qui coupe le bruit
+            <span>et te remet face au cash.</span>
+          </h1>
+          <p class="hero-text">
+            BRUTAL prend tes objectifs, tes vraies actions et tes resultats du jour
+            pour te rendre une lecture froide: ce qui paie, ce qui ment, et quoi
+            faire demain pour avancer plus vite.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-button" data-scroll-target="#offer">Acceder au paywall</button>
+            <button class="text-button" data-scroll-target="#member-zone">Voir la zone membre</button>
+          </div>
+        </div>
 
-  <div class="form">
-    <input id="objectif" placeholder="Objectif mensuel (€)">
-    <input id="deadline" placeholder="Deadline">
-    <input id="niveau" placeholder="Niveau / activité">
+        <div class="hero-stage reveal">
+          <div class="hero-panel">
+            <div class="hero-panel-top">
+              <span>Audit du jour</span>
+              <span class="status-dot">Live</span>
+            </div>
+            <div class="hero-metric">
+              <strong>92%</strong>
+              <p>du temps doit etre pousse vers la vente, la relance et l'acquisition.</p>
+            </div>
+            <ul class="signal-list">
+              <li>Objectif: 12 000 EUR / mois</li>
+              <li>Etat: trop d'activite, pas assez d'impact</li>
+              <li>Demain: 3 actions, 0 distraction</li>
+            </ul>
+          </div>
+          <div class="hero-glow" aria-hidden="true"></div>
+        </div>
+      </section>
 
-    <textarea id="actions" placeholder="Actions réalisées aujourd’hui"></textarea>
-    <textarea id="resultats" placeholder="Résultats concrets"></textarea>
+      <section class="proof reveal">
+        <div>
+          <p class="eyebrow">Ce que BRUTAL fait</p>
+          <h2>Un diagnostic court, dur et exploitable en moins d'une minute.</h2>
+        </div>
+        <div class="proof-grid">
+          <article>
+            <span>01</span>
+            <h3>Cadre l'objectif</h3>
+            <p>Repart de la cible financiere et du temps reel restant.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Expose le fake work</h3>
+            <p>Repere ce qui occupe sans rapprocher du revenu.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Impose le prochain move</h3>
+            <p>Sort un plan pour demain, pas un discours pour se rassurer.</p>
+          </article>
+        </div>
+      </section>
 
-    <button onclick="analyze()">Analyser</button>
+      <section class="method reveal" id="method">
+        <div class="section-heading">
+          <p class="eyebrow">Methode</p>
+          <h2>Une lecture operationnelle, pas du contenu feel good.</h2>
+        </div>
+        <div class="method-layout">
+          <article>
+            <h3>Entree</h3>
+            <p>Objectif mensuel, deadline, niveau actuel, actions du jour, resultats concrets.</p>
+          </article>
+          <article>
+            <h3>Triage</h3>
+            <p>Comparaison immediate entre effort declare, intensite commerciale et traction reelle.</p>
+          </article>
+          <article>
+            <h3>Sortie</h3>
+            <p>Realite, probleme, erreur principale, cap du lendemain, score sous pression.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="offer reveal" id="offer">
+        <div class="section-heading">
+          <p class="eyebrow">Paywall</p>
+          <h2>Choisis le niveau d'acces.</h2>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="price-card">
+            <p class="plan-tag">Apercu</p>
+            <h3>Free Preview</h3>
+            <p class="price">0 EUR</p>
+            <ul>
+              <li>Landing complete</li>
+              <li>Zone membre visible</li>
+              <li>Analyse verrouillee</li>
+            </ul>
+            <button class="ghost-button" data-plan="preview">Rester en apercu</button>
+          </article>
+
+          <article class="price-card featured">
+            <p class="plan-tag">Le plus direct</p>
+            <h3>BRUTAL Pro</h3>
+            <p class="price">19 EUR<span>/mois</span></p>
+            <ul>
+              <li>Analyses completes illimitees</li>
+              <li>Sauvegarde locale de ta cle API</li>
+              <li>Acces instantane a l'espace membre</li>
+            </ul>
+            <button class="primary-button" data-plan="pro">Debloquer Pro</button>
+          </article>
+        </div>
+
+        <div class="checkout-panel" id="checkout">
+          <div>
+            <p class="eyebrow">Activation locale</p>
+            <h3>Debloque le paywall et connecte ton moteur.</h3>
+            <p class="checkout-copy">
+              Cette version livre le front, le verrou d'acces et la connexion API cote navigateur.
+              Pour un vrai paiement en production, il faudra brancher Stripe ou un backend serveur.
+            </p>
+          </div>
+
+          <div class="checkout-form">
+            <label for="customerName">Nom</label>
+            <input id="customerName" type="text" placeholder="Ton prenom ou ton nom">
+
+            <label for="customerEmail">Email</label>
+            <input id="customerEmail" type="email" placeholder="toi@exemple.com">
+
+            <label for="apiKey">Cle OpenRouter</label>
+            <input id="apiKey" type="password" placeholder="sk-or-v1-...">
+
+            <button class="primary-button" id="unlockButton">Activer BRUTAL Pro</button>
+            <p class="microcopy" id="checkoutMessage">Aucune donnee n'est envoyee tant que tu ne lances pas une analyse.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="member-zone reveal" id="member-zone">
+        <div class="member-heading">
+          <div>
+            <p class="eyebrow">Espace membre</p>
+            <h2>Entre tes chiffres. BRUTAL fait le reste.</h2>
+          </div>
+          <div class="membership-pill" id="membershipPill">Mode apercu</div>
+        </div>
+
+        <div class="workspace">
+          <div class="workspace-intro">
+            <p>
+              L'analyse complete est reservee au plan Pro. Le formulaire reste visible pour
+              montrer la promesse produit et faciliter l'activation.
+            </p>
+          </div>
+
+          <div class="form-grid">
+            <label>
+              Objectif mensuel (EUR)
+              <input id="objectif" placeholder="12000">
+            </label>
+
+            <label>
+              Deadline
+              <input id="deadline" placeholder="30 juin">
+            </label>
+
+            <label>
+              Niveau / activite
+              <input id="niveau" placeholder="Freelance closing, debut traction">
+            </label>
+
+            <label class="full-span">
+              Actions realisees aujourd'hui
+              <textarea id="actions" placeholder="30 relances, 2 appels, 1 closing call..."></textarea>
+            </label>
+
+            <label class="full-span">
+              Resultats concrets
+              <textarea id="resultats" placeholder="2 prospects chauds, 1 vente, 0 paiement..."></textarea>
+            </label>
+          </div>
+
+          <div class="workspace-actions">
+            <button class="primary-button" id="analyzeButton">Lancer l'analyse</button>
+            <button class="ghost-button" id="resetAccessButton">Reverrouiller</button>
+          </div>
+
+          <div class="locked-overlay" id="lockedOverlay">
+            <p>Paywall actif. Passe Pro pour obtenir l'analyse complete.</p>
+            <button class="primary-button" data-scroll-target="#offer">Voir l'offre</button>
+          </div>
+
+          <pre id="output">Le verdict de BRUTAL apparaitra ici.</pre>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <pre id="output"></pre>
-</div>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
