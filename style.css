@@ -566,17 +566,137 @@ textarea {
   display: none;
 }
 
-pre {
-  margin: 22px 0 0;
-  padding: 22px;
-  min-height: 220px;
+.response-shell {
+  margin-top: 22px;
+}
+
+.response-empty,
+.response-card,
+.discussion-panel {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: rgba(7, 9, 13, 0.78);
-  color: #f4f7fb;
-  white-space: pre-wrap;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    rgba(7, 9, 13, 0.78);
+}
+
+.response-empty {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.response-card,
+.discussion-panel {
+  padding: 22px;
+}
+
+.response-card.is-hidden,
+.discussion-section.is-hidden,
+.discussion-panel.is-hidden {
+  display: none;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.response-status {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.response-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.response-block {
+  padding: 18px;
+  border-left: 3px solid var(--accent);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.response-block h3 {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.response-block p,
+.response-block li {
+  margin: 0;
+  color: var(--text);
   line-height: 1.7;
-  overflow-wrap: anywhere;
+}
+
+.response-block ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.discussion-section {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.discussion-messages {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.discussion-bubble {
+  padding: 16px 18px;
+  border-radius: 18px;
+  line-height: 1.65;
+}
+
+.discussion-bubble.user {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+}
+
+.discussion-bubble.assistant {
+  background: rgba(225, 75, 49, 0.09);
+  border: 1px solid rgba(225, 75, 49, 0.18);
+}
+
+.discussion-bubble strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.discussion-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+
+.discussion-input {
+  min-height: 120px;
+}
+
+.discussion-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .microcopy {
@@ -728,7 +848,9 @@ pre {
   .price-card,
   .checkout-panel,
   .workspace,
-  pre {
+  .response-empty,
+  .response-card,
+  .discussion-panel {
     padding: 18px;
   }
 

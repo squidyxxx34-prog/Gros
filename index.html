@@ -250,7 +250,32 @@
             <button class="primary-button" data-scroll-target="#offer">Voir l'offre</button>
           </div>
 
-          <pre id="output">Le verdict de BRUTAL apparaitra ici.</pre>
+          <div class="response-shell" id="responseShell">
+            <div class="response-empty" id="responseEmpty">Le verdict de BRUTAL apparaîtra ici.</div>
+            <div class="response-card is-hidden" id="responseCard">
+              <div class="response-header">
+                <p class="eyebrow">Réponse IA</p>
+                <div class="response-status">Analyse prête</div>
+              </div>
+              <div class="response-grid" id="output"></div>
+            </div>
+          </div>
+
+          <div class="discussion-section is-hidden" id="discussionSection">
+            <button class="ghost-button" id="openDiscussionButton">Continuer la discussion</button>
+            <div class="discussion-panel is-hidden" id="discussionPanel">
+              <div class="discussion-messages" id="discussionMessages"></div>
+              <label class="discussion-label" for="discussionInput">Parle à BRUTAL de cette analyse</label>
+              <textarea
+                id="discussionInput"
+                class="discussion-input"
+                placeholder="Exemple : mon offre n’accroche pas, comment je reformule ?"
+              ></textarea>
+              <div class="discussion-actions">
+                <button class="primary-button" id="sendDiscussionButton">Envoyer</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
