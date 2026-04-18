@@ -1,14 +1,17 @@
 :root {
-  --bg: #050505;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-strong: rgba(255, 255, 255, 0.1);
-  --line: rgba(255, 255, 255, 0.12);
-  --text: #f5f1ea;
-  --muted: rgba(245, 241, 234, 0.68);
-  --accent: #ff5a36;
-  --accent-soft: rgba(255, 90, 54, 0.18);
-  --success: #89ffb5;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --bg: #0a0b0d;
+  --bg-soft: #111318;
+  --panel: rgba(18, 21, 27, 0.9);
+  --panel-strong: rgba(24, 28, 36, 0.96);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #edf1f7;
+  --muted: rgba(237, 241, 247, 0.64);
+  --accent: #e14b31;
+  --accent-soft: rgba(225, 75, 49, 0.14);
+  --success: #9ce6b1;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
+  --radius: 22px;
 }
 
 * {
@@ -23,11 +26,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, rgba(255, 90, 54, 0.14), transparent 30%),
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 25%),
-    linear-gradient(180deg, #0b0b0b 0%, #050505 45%, #090909 100%);
+    radial-gradient(circle at top right, rgba(225, 75, 49, 0.1), transparent 28%),
+    linear-gradient(180deg, #0d1014 0%, #0a0b0d 52%, #0f1115 100%);
   color: var(--text);
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Manrope", sans-serif;
 }
 
 body::before {
@@ -35,11 +37,11 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
-  opacity: 0.35;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 96px 96px;
+  opacity: 0.4;
 }
 
 .page-shell {
@@ -58,6 +60,7 @@ body::before {
   gap: 20px;
   padding: 22px 0;
   backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .brand,
@@ -72,13 +75,24 @@ body::before {
 .brand {
   letter-spacing: 0.22em;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 800;
+}
+
+.brand-badge {
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .site-nav {
   display: flex;
   gap: 20px;
   color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .site-nav a:hover,
@@ -108,7 +122,8 @@ body::before {
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .hero h1,
@@ -122,15 +137,17 @@ body::before {
 
 .hero h1 {
   max-width: 10ch;
-  font-size: clamp(3.6rem, 9vw, 7.5rem);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(3.4rem, 8vw, 6.6rem);
+  font-weight: 700;
 }
 
 .hero h1 span {
   display: block;
-  color: rgba(245, 241, 234, 0.72);
-  font-family: "Instrument Serif", serif;
-  font-style: italic;
-  font-weight: 400;
+  color: rgba(237, 241, 247, 0.64);
+  font-family: "Manrope", sans-serif;
+  font-style: normal;
+  font-weight: 500;
 }
 
 .hero-text,
@@ -147,7 +164,35 @@ body::before {
 .hero-text {
   max-width: 540px;
   margin: 24px 0 0;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
+}
+
+.hero-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 720px;
+  margin-top: 28px;
+}
+
+.hero-strip div {
+  padding: 18px 18px 16px;
+  border-top: 2px solid var(--accent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+}
+
+.strip-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-strip strong {
+  font-size: 0.98rem;
+  line-height: 1.4;
 }
 
 .hero-actions,
@@ -172,19 +217,19 @@ textarea {
   padding: 14px 22px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .primary-button {
-  background: var(--accent);
-  color: #120702;
-  font-weight: 700;
-  box-shadow: 0 14px 30px rgba(255, 90, 54, 0.25);
+  background: linear-gradient(180deg, #ef6243, var(--accent));
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 12px 28px rgba(225, 75, 49, 0.22);
 }
 
 .ghost-button {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--line-strong);
   color: var(--text);
 }
 
@@ -224,7 +269,10 @@ textarea {
   width: min(100%, 440px);
   padding: 28px;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
+    linear-gradient(180deg, rgba(11, 13, 17, 0.96), rgba(15, 18, 24, 0.96));
   box-shadow: var(--shadow);
 }
 
@@ -247,7 +295,8 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--success);
+  color: #c2f4cf;
+  font-size: 0.88rem;
 }
 
 .status-dot::before {
@@ -265,7 +314,7 @@ textarea {
 
 .hero-metric strong {
   display: block;
-  font-size: clamp(4rem, 8vw, 6rem);
+  font-size: clamp(3.6rem, 8vw, 5.4rem);
   line-height: 0.9;
 }
 
@@ -290,11 +339,11 @@ textarea {
 
 .hero-glow {
   position: absolute;
-  inset: auto auto 15% 8%;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(255, 90, 54, 0.42), transparent 70%);
-  filter: blur(18px);
+  inset: auto auto 12% 14%;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(225, 75, 49, 0.18), transparent 68%);
+  filter: blur(32px);
 }
 
 .proof,
@@ -327,7 +376,10 @@ textarea {
 .checkout-panel,
 .workspace {
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    var(--panel);
 }
 
 .proof article,
@@ -342,6 +394,7 @@ textarea {
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  font-weight: 700;
 }
 
 .proof article h3,
@@ -379,8 +432,9 @@ textarea {
 
 .price-card .price {
   margin: 0;
-  font-size: 3rem;
+  font-size: 3.2rem;
   line-height: 1;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .price-card .price span {
@@ -389,7 +443,10 @@ textarea {
 }
 
 .featured {
-  background: linear-gradient(180deg, rgba(255, 90, 54, 0.13), rgba(255, 255, 255, 0.04));
+  background:
+    linear-gradient(180deg, rgba(225, 75, 49, 0.12), rgba(255, 255, 255, 0.02)),
+    var(--panel-strong);
+  border-color: rgba(225, 75, 49, 0.28);
   box-shadow: var(--shadow);
 }
 
@@ -423,7 +480,8 @@ input,
 textarea {
   width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.22);
+  border-radius: 16px;
+  background: rgba(6, 8, 12, 0.64);
   color: var(--text);
   padding: 14px 16px;
   outline: none;
@@ -448,14 +506,16 @@ textarea {
 .membership-pill {
   padding: 10px 16px;
   border-radius: 999px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .membership-pill.is-pro {
-  color: #120702;
+  color: #04130a;
   background: var(--success);
   border-color: transparent;
+  font-weight: 800;
 }
 
 .workspace {
@@ -484,8 +544,9 @@ textarea {
   gap: 14px;
   padding: 24px;
   text-align: center;
-  background: rgba(5, 5, 5, 0.74);
-  backdrop-filter: blur(8px);
+  border-radius: var(--radius);
+  background: rgba(9, 11, 15, 0.82);
+  backdrop-filter: blur(10px);
 }
 
 .locked-overlay.is-hidden {
@@ -497,8 +558,9 @@ pre {
   padding: 22px;
   min-height: 220px;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.3);
-  color: #f8f3ed;
+  border-radius: var(--radius);
+  background: rgba(7, 9, 13, 0.78);
+  color: #f4f7fb;
   white-space: pre-wrap;
   line-height: 1.7;
   overflow-wrap: anywhere;
@@ -541,6 +603,10 @@ pre {
     padding: 18px 0;
   }
 
+  .brand-badge {
+    order: 3;
+  }
+
   .site-nav {
     width: 100%;
     justify-content: space-between;
@@ -562,6 +628,10 @@ pre {
 
   .hero h1 {
     font-size: 3rem;
+  }
+
+  .hero-strip {
+    grid-template-columns: 1fr;
   }
 
   .hero-stage {
